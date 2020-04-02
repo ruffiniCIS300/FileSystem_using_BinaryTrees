@@ -17,13 +17,6 @@ namespace Ksu.Cis._300.FileSystem
     public class TreeNode
     {
         /// <summary>
-        /// Enum that defines the types of entities in the file system 
-        /// </summary>
-        public enum FileType {
-            Folder,
-            TextFile
-        }
-        /// <summary>
         /// A property that holds the type of element this node
         /// represents
         /// </summary>

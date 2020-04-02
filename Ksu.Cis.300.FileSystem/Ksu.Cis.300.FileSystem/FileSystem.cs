@@ -10,8 +10,186 @@ using System.Threading.Tasks;
 
 namespace Ksu.Cis._300.FileSystem
 {
+    /// <summary>
+    /// Class that represents the construction of a file system!
+    /// </summary>
     public class FileSystem
     {
+        /// <summary>
+        ///  The node that holds the root of the file system
+        /// </summary>
+        private TreeNode _elements;
+        /// <summary>
+        /// holds the reference to the current
+        /// location in the file system, that is, the current folder/file open
+        /// </summary>
+        private TreeNode _current;
 
+        /// <summary>
+        /// Constructs a new file system with an empty folder as root and sets it as the current
+        /// position in the _current property
+        /// </summary>
+        public FileSystem()
+        {
+            _elements = new TreeNode(FileType.Folder, "root");
+            _current = _elements;
+        }
+
+        /// <summary>
+        /// Adds a new node to the tree by creating a new tree node containing all of the 
+        /// old children plus the new one
+        /// </summary>
+        /// <param name="filepath"> Location we are adding this new node </param>
+        /// <param name="t"> File System we are adding to! </param>
+        /// <param name="type"> Type of file this node is (Folder/TextFile) </param>
+        /// <param name="data"> Name of the new node </param>
+        /// <returns> An updated tree node with the new child added! </returns>
+        private TreeNode Add(Queue<string> filepath, TreeNode t, FileType type, string data)
+        {
+            // List of children we are adding each child node to in order to create our final tree!
+            List<TreeNode> children = new List<TreeNode>();
+
+            // If we haven't reached our destination yet...
+            if (filepath.Count != 0)
+            {
+                // Get the string of the filename we want to "dive" into next
+                string nextNodeName = filepath.Dequeue();
+
+                // go through each of the children of our current node...
+                foreach (TreeNode tree in t.Children)
+                {
+                    // If we find the child we want to go further into, recursively go further
+                    if(tree.Data.Equals(nextNodeName))
+                    {
+                        children.Add(Add(filepath, tree, type, data));
+                    }
+                    // If this isn't the child we want to go into, we still need to add it!
+                    else
+                    {
+                        children.Add(tree);
+                    }
+                }
+            }
+            // If we reach our destination... (the current folder is where we are adding the new child)
+            else
+            {
+                // Add each child of this tree node into the list of children!
+                // Also, check each tree to make sure there are no duplicates
+                foreach (TreeNode tree in t.Children)
+                {
+                    children.Add(tree);
+                    // If the data of one of the children equals the data we are looking for,
+                    // throw an exception, since we cannot have duplicates!
+                    if (tree.Data.Equals(data))
+                    {
+                        throw new ArgumentException();
+                    }
+                }
+                // Create a new tree node and add it to the list of children
+                TreeNode newNode = new TreeNode(type, data);
+                children.Add(newNode);
+            }
+            // Create a new overall tree using our new list of children
+            TreeNode newTree = new TreeNode(t.Type, t.Data, children);
+            return newTree;
+        }
+
+        /// <summary>
+        /// Removes a node and creates a new tree with all of the previous's children minus the 
+        /// one removed
+        /// </summary>
+        /// <param name="filepath"> Location we are adding this node </param>
+        /// <param name="t"> Tree Node we are looking through </param>
+        /// <param name="data"> Data of node we are removing </param>
+        /// <param name="removed"> Bool returning whether or not the node was removed </param>
+        /// <returns> New tree minus the removed node </returns>
+        private TreeNode Remove(Queue<string> filepath, TreeNode t, string data, out bool removed)
+        {
+            // List of children we are adding each child node to in order to create our final tree!
+            List<TreeNode> children = new List<TreeNode>();
+
+            // If we haven't reached our destination yet...
+            if (filepath.Count != 0)
+            {
+                // Get the string of the filename we want to "dive" into next
+                string nextNodeName = filepath.Dequeue();
+
+                // go through each of the children of our current node...
+                foreach (TreeNode tree in t.Children)
+                {
+                    // If we find the child we want to go further into, recursively go further
+                    if (tree.Data.Equals(nextNodeName))
+                    {
+                        if (tree.Data != null)
+                        {
+                            children.Add(Remove(filepath, tree, data, out removed));
+                        }
+                    }
+                    // If this isn't the child we want to go into, we still need to add it!
+                    else
+                    {
+                        children.Add(tree);
+                    }
+                }
+            }
+
+            else
+            {
+                /*foreach (TreeNode tree in t.Children)
+                {
+                    if (tree.Data.Equals(data))
+                    {
+                        removed = true;
+                        return null;
+                    }
+                    else if (tree.Data != null)
+                    {
+                        children.Add(tree);
+                    }
+                }*/
+                removed = true;
+                return null;
+            }
+            // Create a new overall tree using our new list of children
+            TreeNode newTree = new TreeNode(t.Type, t.Data, children);
+            return newTree;
+        }
+
+        /// <summary>
+        /// Calls on the private Remove method and returns whether the element was removed or not
+        /// </summary>
+        /// <param name="data"> Data of node we are removing </param>
+        /// <param name="filepath"> Location of the node we are removing </param>
+        /// <returns> Bool whether the element was removed or not </returns>
+        public bool Remove(string data, Queue<string> filepath)
+        {
+            _elements = Remove(filepath, _elements, data, out bool removed);
+            if (removed == true)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        /// <summary>
+        /// Calls on the private Add method to add an element to the Tree!
+        /// </summary>
+        /// <param name="filepath"> Location of the node we are removing </param>
+        /// <param name="data"> Data of node we are adding </param>
+        /// <param name="type"> Type of file we are adding </param>
+        public void Add(Queue<string> filepath, string data, FileType type)
+        {
+            _elements = Add(filepath, _elements, type, data);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
+        public void GoTo(string input)
+        {
+
+        }
     }
 }

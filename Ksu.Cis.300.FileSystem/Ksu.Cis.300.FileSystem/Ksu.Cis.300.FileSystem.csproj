@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileSystem.cs" />
+    <Compile Include="FileType.cs" />
     <Compile Include="TreeNode.cs" />
     <Compile Include="UserInterface.cs">
       <SubType>Form</SubType>
