@@ -111,6 +111,7 @@ namespace Ksu.Cis._300.FileSystem
             // If we haven't reached our destination yet...
             if (filepath.Count != 0)
             {
+                removed = false;
                 // Get the string of the filename we want to "dive" into next
                 string nextNodeName = filepath.Dequeue();
 
@@ -120,10 +121,12 @@ namespace Ksu.Cis._300.FileSystem
                     // If we find the child we want to go further into, recursively go further
                     if (tree.Data.Equals(nextNodeName))
                     {
-                        if (tree.Data != null)
-                        {
-                            children.Add(Remove(filepath, tree, data, out removed));
-                        }
+                            TreeNode newNode = Remove(filepath, tree, data, out removed);
+                            if (newNode != null)
+                            {
+                                children.Add(Remove(filepath, tree, data, out removed));
+                            }
+                         children.Add(Remove(filepath, tree, data, out removed));
                     }
                     // If this isn't the child we want to go into, we still need to add it!
                     else
@@ -184,12 +187,88 @@ namespace Ksu.Cis._300.FileSystem
             _elements = Add(filepath, _elements, type, data);
         }
         /// <summary>
-        /// 
+        /// Checks if the parameter is a child of the current node, and if it is, sets the 
+        /// current node to the child.
         /// </summary>
-        /// <param name="input"></param>
+        /// <param name="input"> Child we are setting current to! </param>
         public void GoTo(string input)
         {
+            foreach (TreeNode child in _current.Children)
+            {
+                if (child.Data.Equals(input))
+                {
+                    _current = child;
+                }
+            }
+        }
+        /// <summary>
+        /// Returns all of the children of this node in string form (their names)
+        /// </summary>
+        /// <returns> List full of the children's names </returns>
+        public List<string> GetCurrentChildren()
+        {
+            List<string> newList = new List<string>();
+            foreach (TreeNode node in _current.Children)
+            {
+                newList.Add(node.Data);
+            }
+            return newList;
+        }
+        /// <summary>
+        /// Updates _current to path given in filepath!
+        /// </summary>
+        /// <param name="filepath"> Path we are setting _current equal to! </param>
+        /// <param name="t"> Tree we are looking at </param>
+        /// <returns></returns>
+        private bool FindCurrent(Queue<string> filepath, TreeNode t)
+        {
+            if (filepath.Count != 0)
+            {
+                // Get the string of the filename we want to "dive" into next
+                string nextNodeName = filepath.Dequeue();
 
+                // go through each of the children of our current node...
+                foreach (TreeNode tree in t.Children)
+                {
+                    // If we find the child we want to go further into, recursively go further
+                    if (tree.Data.Equals(nextNodeName))
+                    {
+                        return FindCurrent(filepath, tree);
+                    }
+                }
+            }
+            else
+            {
+                _current = t;
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// Uses FindCurrent to update _current and then return the name of the node at the
+        /// end of the path!
+        /// </summary>
+        /// <param name="filepath"> Location of the node we are looking for </param>
+        /// <returns> The string name of the node at the end of the path </returns>
+        public string GetCurrent(Queue<string> filepath)
+        {
+            bool result = FindCurrent(filepath, _elements);
+            return _current.Data;
+        }
+        /// <summary>
+        /// Sets the _current node to reference the root (_elements)
+        /// </summary>
+        public void GoToRoot()
+        {
+            _current = _elements;
+        }
+        /// <summary>
+        /// Returns the file type of the current node (Folder/TextFile)
+        /// </summary>
+        /// <returns></returns>
+        public FileType GetCurrentType()
+        {
+            return _current.Type;
         }
     }
 }
