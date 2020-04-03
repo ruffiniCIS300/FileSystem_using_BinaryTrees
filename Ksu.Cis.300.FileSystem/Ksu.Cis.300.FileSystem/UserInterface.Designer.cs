@@ -56,6 +56,7 @@
             this.uxMakeFolderButton.TabIndex = 1;
             this.uxMakeFolderButton.Text = "Make Folder";
             this.uxMakeFolderButton.UseVisualStyleBackColor = true;
+            this.uxMakeFolderButton.Click += new System.EventHandler(this.uxMakeFolderButton_Click);
             // 
             // uxMakeFileButton
             // 
@@ -65,6 +66,7 @@
             this.uxMakeFileButton.TabIndex = 2;
             this.uxMakeFileButton.Text = "Make File";
             this.uxMakeFileButton.UseVisualStyleBackColor = true;
+            this.uxMakeFileButton.Click += new System.EventHandler(this.uxMakeFileButton_Click);
             // 
             // uxRemoveButton
             // 
@@ -75,6 +77,7 @@
             this.uxRemoveButton.TabIndex = 3;
             this.uxRemoveButton.Text = "Remove";
             this.uxRemoveButton.UseVisualStyleBackColor = true;
+            this.uxRemoveButton.Click += new System.EventHandler(this.uxRemoveButton_Click);
             // 
             // uxLabel1
             // 
@@ -124,6 +127,7 @@
             this.uxUpOneLevelButton.TabIndex = 8;
             this.uxUpOneLevelButton.Text = "Up One Level";
             this.uxUpOneLevelButton.UseVisualStyleBackColor = true;
+            this.uxUpOneLevelButton.Click += new System.EventHandler(this.uxUpOneLevelButton_Click);
             // 
             // uxGoToButton
             // 
@@ -134,6 +138,7 @@
             this.uxGoToButton.TabIndex = 9;
             this.uxGoToButton.Text = "Go To";
             this.uxGoToButton.UseVisualStyleBackColor = true;
+            this.uxGoToButton.Click += new System.EventHandler(this.uxGoToButton_Click);
             // 
             // UserInterface
             // 

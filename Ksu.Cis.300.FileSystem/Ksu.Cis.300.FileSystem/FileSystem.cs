@@ -270,5 +270,23 @@ namespace Ksu.Cis._300.FileSystem
         {
             return _current.Type;
         }
+
+
+
+        /// <summary>
+        /// Checks if the current is set equal to the root!
+        /// </summary>
+        /// <returns> Whether or not the current is set equal to the root </returns>
+        public bool RootEqualsCurrent()
+        {
+            if (_current.Data.Equals(_elements.Data))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }
