@@ -150,10 +150,11 @@ namespace Ksu.Cis._300.FileSystem
         {
             Queue<string> newQueue = new Queue<string>();
             Queue<string> oldQueue = CloneQueue(q);
-            for (int i = 0; i < oldQueue.Count - 1; i++)
+            for (int i = 0; i < q.Count - 1; i++)
             {
                 newQueue.Enqueue(oldQueue.Dequeue());
             }
+
             return newQueue;
         }
 
