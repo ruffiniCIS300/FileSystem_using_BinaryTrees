@@ -129,9 +129,8 @@ namespace Ksu.Cis._300.FileSystem
                             TreeNode newNode = Remove(filepath, tree, data, out removed);
                             if (newNode != null)
                             {
-                                children.Add(Remove(filepath, tree, data, out removed));
+                                children.Add(newNode);
                             }
-                         children.Add(Remove(filepath, tree, data, out removed));
                     }
                     // If this isn't the child we want to go into, we still need to add it!
                     else
