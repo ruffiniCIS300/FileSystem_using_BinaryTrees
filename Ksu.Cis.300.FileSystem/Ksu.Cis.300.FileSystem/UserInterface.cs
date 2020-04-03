@@ -123,16 +123,21 @@ namespace Ksu.Cis._300.FileSystem
         /// </summary>
         private void Display()
         {
-            List<string> newList = _fileSystem.GetCurrentChildren();
-            foreach (string s in newList)
+            Queue<string> newQueue = CloneQueue(_currentpath);
+            uxListBox.Items.Clear();
+            _fileSystem.GetCurrent(newQueue);
+            foreach (string s in _fileSystem.GetCurrentChildren())
             {
                 uxListBox.Items.Add(s);
             }
 
             StringBuilder sb = new StringBuilder();
-            foreach (string s in _currentpath)
+            Queue<string> newQueue2 = CloneQueue(_currentpath);
+            sb.Append("root");
+            foreach (string s in newQueue2)
             {
-                sb.Append(s + " ");
+                sb.Append("\\");
+                sb.Append(s);
             }
             uxPathLabel.Text = sb.ToString();
         }
@@ -159,13 +164,20 @@ namespace Ksu.Cis._300.FileSystem
         /// <param name="e"></param>
         private void uxGoToButton_Click(object sender, EventArgs e)
         {
-            string selection;
-            bool result = TryGetCurrentSelection(out selection);
-            if (result == true)
+            if (uxListBox.SelectedIndex >= 0)
             {
-                GoTo(selection);
+                string selection;
+                bool result = TryGetCurrentSelection(out selection);
+                if (result == true)
+                {
+                    GoTo(selection);
+                }
                 Display();
                 ButtonChange();
+            }
+            else
+            {
+                MessageBox.Show("Please select an item from list");
             }
         }
         /// <summary>
@@ -186,13 +198,20 @@ namespace Ksu.Cis._300.FileSystem
         /// <param name="e"></param>
         private void uxRemoveButton_Click(object sender, EventArgs e)
         {
-            string selection;
-            bool result = TryGetCurrentSelection(out selection);
-            if (result == true)
+            if (uxListBox.SelectedIndex >= 0)
             {
-                Remove(selection);
+                string selection;
+                bool result = TryGetCurrentSelection(out selection);
+                if (result == true)
+                {
+                    Remove(selection);
+                }
                 Display();
                 ButtonChange();
+            }
+            else
+            {
+                MessageBox.Show("Please select an item from the list");
             }
         }
         /// <summary>
@@ -202,11 +221,13 @@ namespace Ksu.Cis._300.FileSystem
         /// <param name="e"></param>
         private void uxMakeFileButton_Click(object sender, EventArgs e)
         {
+
             if (uxTextBox.Text != "")
             {
                 MakeEntity(uxTextBox.Text, FileType.TextFile);
                 Display();
                 ButtonChange();
+                uxTextBox.Clear();
             }
             else
             {
@@ -225,6 +246,7 @@ namespace Ksu.Cis._300.FileSystem
                 MakeEntity(uxTextBox.Text, FileType.Folder);
                 Display();
                 ButtonChange();
+                uxTextBox.Clear();
             }
             else
             {
@@ -241,11 +263,16 @@ namespace Ksu.Cis._300.FileSystem
         {
             try
             {
-                _fileSystem.Add(_currentpath, input, type);
+                Queue<string> newQueue = CloneQueue(_currentpath);
+                _fileSystem.Add(newQueue, input, type);
             }
-            catch (ArgumentException)
+            catch (ArgumentException ae)
             {
-                MessageBox.Show("Element already exists");
+                MessageBox.Show(ae.Message);
+            }
+            catch (InvalidOperationException ie)
+            {
+                MessageBox.Show(ie.Message);
             }
         }
         /// <summary>
@@ -255,6 +282,7 @@ namespace Ksu.Cis._300.FileSystem
         private void Remove(string input)
         {
             Queue<string> newQueue = CloneQueue(_currentpath);
+            newQueue.Enqueue(input);
             _fileSystem.Remove(input, newQueue);
         }
         /// <summary>
@@ -263,7 +291,9 @@ namespace Ksu.Cis._300.FileSystem
         /// <param name="filename"> what we are setting _current to! </param>
         private void GoTo(string filename)
         {
+            _currentpath.Enqueue(filename);
             _fileSystem.GoTo(filename);
+
         }
         /// <summary>
         /// If the current path isn't empty, remove the last item on the queue!
@@ -273,7 +303,7 @@ namespace Ksu.Cis._300.FileSystem
         {
             if (_currentpath.Count != 0)
             {
-                RemoveLastInQueue(_currentpath);
+                _currentpath = RemoveLastInQueue(_currentpath);
             }
             else
             {

@@ -110,7 +110,6 @@
             // 
             // uxListBox
             // 
-            this.uxListBox.Enabled = false;
             this.uxListBox.FormattingEnabled = true;
             this.uxListBox.ItemHeight = 25;
             this.uxListBox.Location = new System.Drawing.Point(96, 339);

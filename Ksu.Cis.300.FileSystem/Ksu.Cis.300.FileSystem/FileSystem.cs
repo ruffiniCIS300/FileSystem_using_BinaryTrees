@@ -61,6 +61,11 @@ namespace Ksu.Cis._300.FileSystem
                     // If we find the child we want to go further into, recursively go further
                     if(tree.Data.Equals(nextNodeName))
                     {
+                        if (tree.Type == FileType.TextFile)
+                        {
+                            throw new InvalidOperationException("Whatever");
+                        }
+                        
                         children.Add(Add(filepath, tree, type, data));
                     }
                     // If this isn't the child we want to go into, we still need to add it!
@@ -82,7 +87,7 @@ namespace Ksu.Cis._300.FileSystem
                     // throw an exception, since we cannot have duplicates!
                     if (tree.Data.Equals(data))
                     {
-                        throw new ArgumentException();
+                        throw new ArgumentException("Cannot Have Duplicates!");
                     }
                 }
                 // Create a new tree node and add it to the list of children
